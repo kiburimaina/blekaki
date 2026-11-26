@@ -29,7 +29,7 @@ export default function CategoryGrid() {
           {shown.map((c) => (
             <li key={c.slug}>
               <a
-                href={`#${c.slug}`}
+                href={`/shop?category=${c.slug}`}
                 style={{ background: c.tone }}
                 className="flex aspect-[4/5] items-end rounded-[18px] p-[18px] font-serif text-[22px] leading-tight text-[#26231f]"
               >
