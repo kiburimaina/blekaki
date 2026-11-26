@@ -11,9 +11,10 @@ export default function Header() {
           <a href="/#wholesale" className="hover:text-ink">Wholesale</a>
           <a href="/#trust" className="hover:text-ink">Buyer protection</a>
         </nav>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 text-[15px] font-medium">
+          <a href="/wishlist">Saved</a>
           <CartLink />
-          <a href="/#sell" className="hidden rounded-full bg-ink px-6 py-3 text-[15px] font-medium text-ivory sm:block">Start selling</a>
+          <a href="/#sell" className="hidden rounded-full bg-ink px-6 py-3 text-ivory sm:block">Start selling</a>
         </div>
       </div>
     </header>

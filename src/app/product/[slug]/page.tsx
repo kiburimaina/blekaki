@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AddToCart from "@/components/AddToCart";
+import WishlistButton from "@/components/WishlistButton";
+import RecordView from "@/components/RecordView";
+import RecentlyViewed from "@/components/RecentlyViewed";
 import { formatMoney } from "@/lib/money";
 import { categoryName, getProduct, products } from "@/lib/products";
 
@@ -11,16 +14,27 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const p = getProduct(params.slug);
-  return { title: p ? `${p.name} — Blekaki` : "Product — Blekaki" };
+  return { title: p ? `${p.name} — Blekaki` : "Product — Blekaki", description: p?.description };
 }
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const p = getProduct(params.slug);
   if (!p) notFound();
 
+  // Structured data: no ratings or availability are claimed because none are verified yet.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.name,
+    description: p.description,
+    offers: { "@type": "Offer", price: (p.priceMinor / 100).toFixed(2), priceCurrency: p.currency, seller: { "@type": "Organization", name: p.sellerName } },
+  };
+
   return (
     <>
       <Header />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <RecordView slug={p.slug} />
       <main className="mx-auto grid max-w-[1120px] gap-10 px-5 py-12 md:grid-cols-2 md:gap-14">
         <div style={{ background: p.tone }} className="aspect-[4/5] rounded-[22px]" role="img" aria-label={`${p.name} image placeholder`} />
         <div>
@@ -37,9 +51,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             <div className="flex justify-between gap-4 py-3"><dt className="text-ink-soft">Returns</dt><dd className="text-right">Set by the seller</dd></div>
           </dl>
 
-          <div className="mt-8"><AddToCart slug={p.slug} /></div>
+          <div className="mt-8 flex flex-wrap gap-3"><AddToCart slug={p.slug} /><WishlistButton slug={p.slug} /></div>
         </div>
       </main>
+      <RecentlyViewed excludeSlug={p.slug} />
       <Footer />
     </>
   );
